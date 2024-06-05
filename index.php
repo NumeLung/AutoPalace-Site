@@ -1,6 +1,13 @@
 <!doctype html>
 <html class="no-js" lang="en">
+<?php
+require_once "include.php";
+require_once "Database.php";
+$db = new Database();
 
+$brands = $db->select("SELECT id, name FROM brand");
+$models = $db->select("SELECT id, id_brand, name FROM model");
+?>
     <head>
         <!-- meta data -->
         <meta charset="utf-8">
@@ -122,12 +129,16 @@
 									<div class="single-model-search">
 										<h2>марка</h2>
 										<div class="model-select-icon">
-											<select class="form-control">
-												<option>Избери</option>
-											  	<option value='Abarth'>Abarth</option>
-												 <option value='Alfa Romeo'>Alfa Romeo</option>
-												  <option value='Aston Martin'>Aston Martin</option> <option value='Audi'>Audi</option> <option value='Bentley'>Bentley</option> <option value='BMW'>BMW</option> <option value='Bugatti'>Bugatti</option> <option value='Cadillac'>Cadillac</option> <option value='Chevrolet'>Chevrolet</option> <option value='Chrysler'>Chrysler</option> <option value='Citroën'>Citroën</option> <option value='Dacia'>Dacia</option> <option value='Daewoo'>Daewoo</option> <option value='Daihatsu'>Daihatsu</option> <option value='Dodge'>Dodge</option> <option value='Donkervoort'>Donkervoort</option> <option value='DS'>DS</option> <option value='Ferrari'>Ferrari</option> <option value='Fiat'>Fiat</option> <option value='Fisker'>Fisker</option> <option value='Ford'>Ford</option> <option value='Honda'>Honda</option> <option value='Hummer'>Hummer</option> <option value='Hyundai'>Hyundai</option> <option value='Infiniti'>Infiniti</option> <option value='Iveco'>Iveco</option> <option value='Jaguar'>Jaguar</option> <option value='Jeep'>Jeep</option> <option value='Kia'>Kia</option> <option value='KTM'>KTM</option> <option value='Lada'>Lada</option> <option value='Lamborghini'>Lamborghini</option> <option value='Lancia'>Lancia</option> <option value='Land Rover'>Land Rover</option> <option value='Landwind'>Landwind</option> <option value='Lexus'>Lexus</option> <option value='Lotus'>Lotus</option> <option value='Maserati	'>Maserati</option> <option value='Maybach'>Maybach</option> <option value='Mazda'>Mazda</option> <option value='McLaren'>McLaren</option> <option value='Mercedes-Benz'>Mercedes-Benz</option> <option value='MG'>MG</option> <option value='Mini'>Mini</option> <option value='Mitsubishi'>Mitsubishi</option> <option value='Morgan'>Morgan</option> <option value='Nissan'>Nissan</option> <option value='Opel'>Opel</option> <option value='Peugeot'>Peugeot</option> <option value='Porsche'>Porsche</option> <option value='Renault'>Renault</option> <option value='Rolls-Royce'>Rolls-Royce</option> <option value='Rover'>Rover</option> <option value='Saab'>Saab</option> <option value='Seat'>Seat</option> <option value='Skoda'>Skoda</option> <option value='Smart'>Smart</option> <option value='SsangYong'>SsangYong</option> <option value='Subaru'>Subaru</option> <option value='Suzuki'>Suzuki</option> <option value='Tesla'>Tesla</option> <option value='Toyota'>Toyota</option> <option value='Volkswagen'>Volkswagen</option> <option value='Volvo'>Volvo</option> <option value='Other'>Other / Not-Listed</option>
-											</select><!-- /.select-->
+                                            <?php
+                                            echo "<select class=\"form-control\" name=\"search_brand\">";
+                                            echo "<option value=''>Избери</option>";
+                                            foreach ($brands as $brand) {
+                                                $selected = $_POST['search_brand'] == $brand['id'] ? 'selected' : '';
+                                                echo "<option $selected value='{$brand['id']}'>{$brand['name']}</option>";
+                                                /*echo "<option value='{$brand['id']}'>{$brand['name']}</option>"; safe working one*/
+                                            }
+                                            echo "</select>"
+                                            ?>
 										</div><!-- /.model-select-icon -->
 									</div>
 									<div class="single-model-search">
