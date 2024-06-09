@@ -1,13 +1,5 @@
 <!doctype html>
 <html class="no-js" lang="en">
-<?php
-require_once "include.php";
-require_once "Database.php";
-$db = new Database();
-
-$brands = $db->select("SELECT id, name FROM brand");
-$models = $db->select("SELECT id, id_brand, name FROM model");
-?>
     <head>
         <!-- meta data -->
         <meta charset="utf-8">
@@ -61,10 +53,20 @@ $models = $db->select("SELECT id, id_brand, name FROM model");
 			<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
 	
 	<body>
+    <?php
+    require_once "include.php";
+    require_once "Database.php";
+    $db = new Database();
+    $brands = $db->select("SELECT id, name FROM brand");
+    $trims = $db->select("SELECT DISTINCT trim FROM cars");
+    $values = $db->select("SELECT DISTINCT value FROM cars");
+    $prices = $db->select("SELECT MAX(price) AS max, MIN(price) AS min FROM cars");
+    $years = $db->select("SELECT DISTINCT(year) FROM cars ORDER BY year ASC");
+    ?>
 		<!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
@@ -120,115 +122,131 @@ $models = $db->select("SELECT id, id_brand, name FROM model");
 				</div>
 			</div>
 
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="model-search-content">
-							<div class="row">
-								<div class="col-md-offset-1 col-md-2 col-sm-12">
-									<div class="single-model-search">
-										<h2>марка</h2>
-										<div class="model-select-icon">
-                                            <?php
-                                            echo "<select class=\"form-control\" name=\"search_brand\">";
-                                            echo "<option value=''>Избери</option>";
-                                            foreach ($brands as $brand) {
-                                                $selected = $_POST['search_brand'] == $brand['id'] ? 'selected' : '';
-                                                echo "<option $selected value='{$brand['id']}'>{$brand['name']}</option>";
-                                                /*echo "<option value='{$brand['id']}'>{$brand['name']}</option>"; safe working one*/
-                                            }
-                                            echo "</select>"
-                                            ?>
-										</div><!-- /.model-select-icon -->
-									</div>
-									<div class="single-model-search">
-										<h2>модел</h2>
-										<div class="model-select-icon">
-											<select class="form-control">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="model-search-content">
+                            <form action="search_results.php" method="get">
+                                <div class="row">
+                                    <div class="col-md-offset-1 col-md-2 col-sm-12">
+                                        <div class="single-model-search">
+                                            <h2>марка</h2>
+                                            <div class="model-select-icon">
+                                                <?php
+                                                echo "<select class=\"form-control\" name=\"search_brand\" id=\"search_brand\">";
+                                                echo "<option value=''>Избери</option>";
+                                                foreach ($brands as $brand) {
+                                                    $selected = isset($_POST['search_brand']) && $_POST['search_brand'] == $brand['id'] ? 'selected' : '';
+                                                    echo "<option $selected value='{$brand['id']}'>{$brand['name']}</option>";
+                                                }
+                                                echo "</select>"
+                                                ?>
+                                            </div><!-- /.model-select-icon -->
+                                        </div>
+                                        <div class="single-model-search">
+                                            <h2>модел</h2>
+                                            <div class="model-select-icon">
+                                                <select class="form-control" id="search_model" name="search_model">
+                                                    <option value="default">избери</option><!-- /.option-->
+                                                </select><!-- /.select-->
+                                            </div><!-- /.model-select-icon -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-offset-1 col-md-2 col-sm-12">
+                                        <div class="single-model-search">
+                                            <h2>Състояние</h2>
+                                            <div class="model-select-icon">
+                                                <select class="form-control" name="condition">
+                                                    <option value="">Избери</option><!-- /.option-->
+                                                    <?php
+                                                    foreach ($values as $value) {
+                                                        $selected = isset($_POST['selected_value']) && $_POST['selected_value'] == $value['value'] ? 'selected' : '';
+                                                        echo "<option $selected value='{$value['value']}'>{$value['value']}</option>";
+                                                    }
+                                                    ?>
+                                                </select><!-- /.select-->
+                                            </div><!-- /.model-select-icon -->
+                                        </div>
+                                        <div class="single-model-search">
+                                            <h2>Шаси</h2>
+                                            <div class="model-select-icon">
+                                                <select class="form-control" name="chassis">
+                                                    <option value="">Избери</option><!-- /.option-->
+                                                    <?php
+                                                    foreach ($trims as $trim) {
+                                                        $selected = isset($_POST['selected_trim']) && $_POST['selected_trim'] == $trim['trim'] ? 'selected' : '';
+                                                        echo "<option $selected value='{$trim['trim']}'>{$trim['trim']}</option>";
+                                                    }
+                                                    ?>
+                                                </select><!-- /.select-->
+                                            </div><!-- /.model-select-icon -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-offset-1 col-md-2 col-sm-12">
+                                        <div class="single-model-search">
+                                            <h2>Изберете година</h2>
+                                            <div class="model-select-icon">
+                                                <select class="form-control" name="year">
+                                                    <option value="">избери</option><!-- /.option-->
+                                                    <?php
+                                                    foreach ($years as $year){
+                                                        echo "<option value='{$year['year']}'>{$year['year']}</option>";
+                                                    }
+                                                    ?>
+                                                </select><!-- /.select-->
+                                            </div><!-- /.model-select-icon -->
+                                        </div>
+                                        <div class="single-model-search">
+                                            <h2>цена до:</h2><span id="demo"></span>
+                                            <div class="slidecontainer">
+                                                <?php
+                                                foreach ($prices as $price) {
+                                                    echo "<input type=\"range\" min='{$price['min']}' max='{$price['max']}' value=\"0\" class=\"slider\" id=\"myRange\" name=\"price\">";
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="single-model-search text-center">
+                                            <button type="submit" class="welcome-btn model-search-btn">Търси</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-											  	<option value="default">избери</option><!-- /.option-->
+            <script>
+                $(document).ready(function() {
+                    $('#search_brand').change(function() {
+                        var brandId = $(this).val();
+                        if (brandId) {
+                            $.ajax({
+                                type: 'POST',
+                                url: 'get_car_models.php',
+                                data: { brand_id: brandId },
+                                success: function(response) {
+                                    $('#search_model').html(response);
+                                }
+                            });
+                        } else {
+                            $('#search_model').html('<option value="default">избери</option>');
+                        }
+                    });
+                });
 
-											  	<option value="kia-rio">kia-rio</option><!-- /.option-->
+                var slider = document.getElementById("myRange");
+                var output = document.getElementById("demo");
+                output.innerHTML = slider.value; // Display the default slider value
 
-											  	<option value="mitsubishi">mitsubishi</option><!-- /.option-->
-											  	<option value="ford">ford</option><!-- /.option-->
-
-											</select><!-- /.select-->
-										</div><!-- /.model-select-icon -->
-									</div>
-								</div>
-								<div class="col-md-offset-1 col-md-2 col-sm-12">
-									<div class="single-model-search">
-										<h2>Състояние</h2>
-										<div class="model-select-icon">
-											<select class="form-control">
-
-											  	<option value="default">Избери</option><!-- /.option-->
-											  	<option value="like_new">като нова</option><!-- /.option-->
-											  	<option value="mint">запазена</option><!-- /.option-->
-											  	<option value="well_worn">използвана</option><!-- /.option-->
-
-											</select><!-- /.select-->
-										</div><!-- /.model-select-icon -->
-									</div>
-									<div class="single-model-search">
-										<h2>Шаси</h2>
-										<div class="model-select-icon">
-											<select class="form-control">
-
-											  	<option value="default">Избери</option><!-- /.option-->
-											  	<option value="sedan">седан</option><!-- /.option-->
-											  	<option value="van">ван</option><!-- /.option-->
-											  	<option value="roadster">роудстър</option><!-- /.option-->
-
-											</select><!-- /.select-->
-										</div><!-- /.model-select-icon -->
-									</div>									
-								</div>
-								<div class="col-md-offset-1 col-md-2 col-sm-12">
-									<div class="single-model-search">
-										<h2>Изберете година</h2>
-										<div class="model-select-icon">
-											<select class="form-control">
-
-											  	<option value="default">Година</option><!-- /.option-->
-											  	<option value="2018">2018</option><!-- /.option-->
-											  	<option value="2017">2017</option><!-- /.option-->
-											  	<option value="2016">2016</option><!-- /.option-->
-
-											</select><!-- /.select-->
-										</div><!-- /.model-select-icon -->
-									</div>
-									<div class="single-model-search">
-										<h2>цена до:</h2>
-										<div class="slidecontainer">
-											<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-										  </div>
-									</div>
-									<script>
-										var slider = document.getElementById("myRange");
-										var output = document.getElementById("demo");
-										output.innerHTML = slider.value; // Display the default slider value
-
-										// Update the current slider value (each time you drag the slider handle)
-										slider.oninput = function() {
-										output.innerHTML = this.value;
-										}
-									</script>
-								</div>
-								<div class="col-md-2 col-sm-12">
-									<div class="single-model-search text-center">
-										<button class="welcome-btn model-search-btn" onclick="window.location.href='#'">
-											Търси
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
+                // Update the current slider value (each time you drag the slider handle)
+                slider.oninput = function() {
+                    output.innerHTML = this.value;
+                }
+            </script>
 		</section><!--/.welcome-hero-->
 		<!--welcome-hero end -->
 
