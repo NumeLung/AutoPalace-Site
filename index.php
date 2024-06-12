@@ -126,51 +126,50 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="model-search-content">
-                            <form action="search_results.php" method="get">
                                 <div class="row">
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
                                             <h2>марка</h2>
                                             <div class="model-select-icon">
+                                                <select class="form-control" name="search_brand" id="search_brand">"
+                                                    <option value=''>Избери</option>"
                                                 <?php
-                                                echo "<select class=\"form-control\" name=\"search_brand\" id=\"search_brand\">";
-                                                echo "<option value=''>Избери</option>";
                                                 foreach ($brands as $brand) {
                                                     $selected = isset($_POST['search_brand']) && $_POST['search_brand'] == $brand['id'] ? 'selected' : '';
                                                     echo "<option $selected value='{$brand['id']}'>{$brand['name']}</option>";
                                                 }
-                                                echo "</select>"
                                                 ?>
-                                            </div><!-- /.model-select-icon -->
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="single-model-search">
                                             <h2>модел</h2>
                                             <div class="model-select-icon">
                                                 <select class="form-control" id="search_model" name="search_model">
-                                                    <option value="default">избери</option><!-- /.option-->
-                                                </select><!-- /.select-->
-                                            </div><!-- /.model-select-icon -->
+                                                    <option value="">избери</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
                                             <h2>Състояние</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="condition">
-                                                    <option value="">Избери</option><!-- /.option-->
+                                                <select class="form-control" name="search_value" id="search_value">
+                                                    <option value="">Избери</option>
                                                     <?php
                                                     foreach ($values as $value) {
                                                         $selected = isset($_POST['selected_value']) && $_POST['selected_value'] == $value['value'] ? 'selected' : '';
                                                         echo "<option $selected value='{$value['value']}'>{$value['value']}</option>";
                                                     }
                                                     ?>
-                                                </select><!-- /.select-->
-                                            </div><!-- /.model-select-icon -->
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="single-model-search">
                                             <h2>Шаси</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="chassis">
+                                                <select class="form-control" name="search_trim" id="search_trim">
                                                     <option value="">Избери</option><!-- /.option-->
                                                     <?php
                                                     foreach ($trims as $trim) {
@@ -184,9 +183,9 @@
                                     </div>
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
-                                            <h2>Изберете година</h2>
+                                            <h2>година</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="year">
+                                                <select class="form-control" name="search_year" id="search_year">
                                                     <option value="">избери</option><!-- /.option-->
                                                     <?php
                                                     foreach ($years as $year){
@@ -209,16 +208,53 @@
                                     </div>
                                     <div class="col-md-2 col-sm-12">
                                         <div class="single-model-search text-center">
-                                            <button type="submit" class="welcome-btn model-search-btn">Търси</button>
+                                            <button type="submit" class="welcome-btn model-search-btn" onclick="showFeatured();" id="collectButton">Търси</button>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+            <script>
+                const button = document.getElementById('collectButton');
 
+                button.addEventListener('click', async _ => {
+                    try {
+                        const response = await fetch('get_cars.php', {
+                            method: 'post',
+                            body: {
+                                // Your body
+                            }
+                        });
+                        console.log('Completed!', response);
+                    } catch(err) {
+                        console.error(`Error: ${err}`);
+                    }
+                });
+            </script>
+            <script>
+                document.getElementById('collectButton').addEventListener('click', function() {
+                    // Get the selected values from each select element
+                    const search_brand = document.getElementById('search_brand').value;
+                    const search_model = document.getElementById('search_model').value;
+                    const search_value = document.getElementById('search_value').value;
+                    const search_trim = document.getElementById('search_trim').value;
+                    const search_year = document.getElementById('search_year').value;
+                    const search_price = document.getElementById('demo').innerHTML;
+                    // Create an array with the selected values
+                    const selectedValues = [search_brand, search_model, search_value, search_trim, search_year, search_price];
+                    // Log the array to the console (or use it as needed)
+                    console.log(selectedValues);
+                });
+                function showFeatured() {
+
+                    const featuredElement = document.getElementById("featured-cars");
+                    if (featuredElement) {
+                        featuredElement.scrollIntoView({ behavior: "smooth" });
+                    }
+                }
+            </script>
             <script>
                 $(document).ready(function() {
                     $('#search_brand').change(function() {
@@ -349,7 +385,7 @@
 											<p class="new-cars-para2">
 												Изпитайте смесицата от стил, технология и гъвкавост с Opel Mokka 2021.
 											</p>
-											<button class="welcome-btn new-cars-btn" onclick="window.location.href='#'">
+											<button class="welcome-btn new-cars-btn" onclick="window.location.href='https://www.opel.bg/koli/mokka-models.html'">
 												Вижте повече
 											</button>
 										</div><!--/.new-cars-txt-->	
@@ -368,7 +404,7 @@
 		<section id="featured-cars" class="featured-cars">
 			<div class="container">
 				<div class="section-header">
-					<p>checkout <span>the</span> featured cars</p>
+					<p>Разгледайте нашият шоуруум</p>
 					<h2>featured cars</h2>
 				</div><!--/.section-header-->
 				<div class="featured-cars-content">
@@ -377,7 +413,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc1.png" alt="cars">
+										<img src="assets/images/featured-cars/1.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -401,7 +437,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc2.png" alt="cars">
+										<img src="assets/images/featured-cars/2.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -425,7 +461,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc3.png" alt="cars">
+										<img src="assets/images/featured-cars/3.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -440,7 +476,7 @@
 									<h2><a href="#">Lamborghini Huracan Performante <span>5.2 V10</span></a></h2>
 									<h3>$125,250</h3>
 									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
+
 									</p>
 								</div>
 							</div>
@@ -449,7 +485,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc4.png" alt="cars">
+										<img src="assets/images/featured-cars/4.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -475,7 +511,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc5.png" alt="cars">
+										<img src="assets/images/featured-cars/5.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -499,7 +535,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc6.png" alt="cars">
+										<img src="assets/images/featured-cars/6.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -523,7 +559,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc8.png" alt="cars">
+										<img src="assets/images/featured-cars/8.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -547,7 +583,7 @@
 							<div class="single-featured-cars">
 								<div class="featured-img-box">
 									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/fc7.png" alt="cars">
+										<img src="assets/images/featured-cars/7.png" alt="cars">
 									</div>
 									<div class="featured-model-info">
 										<p>
@@ -578,7 +614,7 @@
 		<section id="clients-say"  class="clients-say">
 			<div class="container">
 				<div class="section-header">
-					<h2>what our clients say</h2>
+					<h2>Какво мислят клиентите ни</h2>
 				</div><!--/.section-header-->
 				<div class="row">
 					<div class="owl-carousel testimonial-carousel">
@@ -597,8 +633,8 @@
 										</p>
 									</div><!--/.testimonial-comment-->
 									<div class="testimonial-person">
-										<h2><a href="#">Мария Иванова</a></h2>
-										<h4>new york</h4>
+										<h2><a href="#">Георги Димитров</a></h2>
+										<h4>Димитровград</h4>
 									</div><!--/.testimonial-person-->
 								</div><!--/.testimonial-description-->
 							</div><!--/.single-testimonial-box-->
@@ -618,8 +654,8 @@
 										</p>
 									</div><!--/.testimonial-comment-->
 									<div class="testimonial-person">
-										<h2><a href="#">Георги Димитров</a></h2>
-										<h4>london</h4>
+										<h2><a href="#">Мария Иванова</a></h2>
+										<h4>Разград</h4>
 									</div><!--/.testimonial-person-->
 								</div><!--/.testimonial-description-->
 							</div><!--/.single-testimonial-box-->
@@ -639,8 +675,8 @@
 										</p>
 									</div><!--/.testimonial-comment-->
 									<div class="testimonial-person">
-										<h2><a href="#">john doe</a></h2>
-										<h4>washington</h4>
+										<h2><a href="#">иван иванов</a></h2>
+										<h4>Варна</h4>
 									</div><!--/.testimonial-person-->
 								</div><!--/.testimonial-description-->
 							</div><!--/.single-testimonial-box-->
@@ -710,11 +746,11 @@
 									<a href="index.php">TorqueGT</a>
 								</div>
 								<p>
-									Ased do eiusm tempor incidi ut labore et dolore magnaian aliqua. Ut enim ad minim veniam.
+									Авбомобилите са нашата страаст
 								</p>
 								<div class="footer-contact">
-									<p>info@themesine.com</p>
-									<p>+1 (885) 2563154554</p>
+									<p>info@bobauhleba.com</p>
+									<p>088 скрий са</p>
 								</div>
 							</div>
 						</div>
@@ -722,10 +758,10 @@
 							<div class="single-footer-widget">
 								<h2>about devloon</h2>
 								<ul>
-									<li><a href="#">about us</a></li>
-									<li><a href="#">career</a></li>
-									<li><a href="#">terms <span> of service</span></a></li>
-									<li><a href="#">privacy policy</a></li>
+									<li><a href="#">За нас</a></li>
+									<li><a href="#">Работа при нас</a></li>
+									<li><a href="#">ToS</a></li>
+									<li><a href="#">Политика на поверителност</a></li>
 								</ul>
 							</div>
 						</div>
@@ -749,7 +785,7 @@
 											<li><a href="#">porsche</a></li>
 											<li><a href="#">land rover</a></li>
 											<li><a href="#">aston martin</a></li>
-											<li><a href="#">mersedes</a></li>
+											<li><a href="#">mercedes</a></li>
 											<li><a href="#">opel</a></li>
 										</ul>
 									</div>
@@ -758,10 +794,10 @@
 						</div>
 						<div class="col-md-offset-1 col-md-3 col-sm-6">
 							<div class="single-footer-widget">
-								<h2>news letter</h2>
+								<h2>бюлетина</h2>
 								<div class="footer-newsletter">
 									<p>
-										Subscribe to get latest news  update and informations
+										Абонирайте се за нашата бюлетина
 									</p>
 								</div>
 								<div class="hm-foot-email">
@@ -780,12 +816,12 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<p>
-								&copy; copyright.designed and developed by <a href="https://www.themesine.com/">themesine</a>.
+								&copy; copyright.designed and developed by <a href="https://www.themesine.com/">NumeLung</a>.
 							</p><!--/p-->
 						</div>
 						<div class="col-sm-6">
 							<div class="footer-social">
-								<a href="#"><i class="fa fa-facebook"></i></a>	
+								<a href=""><i class="fa fa-facebook"></i></a>
 								<a href="#"><i class="fa fa-instagram"></i></a>
 								<a href="#"><i class="fa fa-linkedin"></i></a>
 								<a href="#"><i class="fa fa-pinterest-p"></i></a>
