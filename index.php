@@ -58,9 +58,10 @@
 	
 	<body>
     <?php
-    require_once "include.php";
-    require_once "Database.php";
-    $db = new Database();
+    require_once "config.php";
+    require_once "Database1.php";
+    $db = new Database1();
+
     $brands = $db->select("SELECT id, name FROM brand");
     $trims = $db->select("SELECT DISTINCT trim FROM cars");
     $values = $db->select("SELECT DISTINCT value FROM cars");
@@ -127,11 +128,12 @@
                     <div class="col-md-12">
                         <div class="model-search-content">
                                 <div class="row">
+                                    <form method="POST" action="index.php">
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
                                             <h2>марка</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="search_brand" id="search_brand">"
+                                                <select class="form-control" id="search_brand" name="search_brand">
                                                     <option value=''>Избери</option>"
                                                 <?php
                                                 foreach ($brands as $brand) {
@@ -140,44 +142,74 @@
                                                 }
                                                 ?>
                                                 </select>
+                                                <script type="text/javascript">
+                                                    document.getElementById('search_brand').value = "<?php echo isset($_POST['search_brand']) ? $_POST['search_brand'] : ''; ?>";
+                                                </script>
                                             </div>
                                         </div>
                                         <div class="single-model-search">
                                             <h2>модел</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" id="search_model" name="search_model">
-                                                    <option value="">избери</option>
-                                                </select>
-                                            </div>
+                                                <select class="form-control" id="search_model">
+                                                    <option value="default">избери</option><!-- /.option-->
+                                                    <!-- Options will be populated dynamically -->
+                                                </select><!-- /.select-->
+                                            </div><!-- /.model-select-icon -->
                                         </div>
+                                        <script>
+                                            //load car models via ajax
+                                            $(document).ready(function() {
+                                                $('#search_brand').change(function() {
+                                                    var brandId = $(this).val();
+                                                    if (brandId) {
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: 'get_car_models.php',
+                                                            data: { brand_id: brandId },
+                                                            success: function(response) {
+                                                                $('#search_model').html(response);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        $('#search_model').html('<option value="">избери</option>');
+                                                    }
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
                                             <h2>Състояние</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="search_value" id="search_value">
+                                                <select class="form-control" id="search_value" name="search_value">
                                                     <option value="">Избери</option>
                                                     <?php
                                                     foreach ($values as $value) {
-                                                        $selected = isset($_POST['selected_value']) && $_POST['selected_value'] == $value['value'] ? 'selected' : '';
+                                                        $selected = isset($_POST['search_value']) && $_POST['search_value'] == $value['value'] ? 'selected' : '';
                                                         echo "<option $selected value='{$value['value']}'>{$value['value']}</option>";
                                                     }
                                                     ?>
                                                 </select>
+                                                <script type="text/javascript">
+                                                    document.getElementById('search_value').value = "<?php echo isset($_POST['search_value']) ? $_POST['search_value'] : ''; ?>";
+                                                </script>
                                             </div>
                                         </div>
                                         <div class="single-model-search">
                                             <h2>Шаси</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="search_trim" id="search_trim">
+                                                <select class="form-control" id="search_trim" name="search_trim" >
                                                     <option value="">Избери</option><!-- /.option-->
                                                     <?php
                                                     foreach ($trims as $trim) {
-                                                        $selected = isset($_POST['selected_trim']) && $_POST['selected_trim'] == $trim['trim'] ? 'selected' : '';
+                                                        $selected = isset($_POST['search_trim']) && $_POST['search_trim'] == $trim['trim'] ? 'selected' : '';
                                                         echo "<option $selected value='{$trim['trim']}'>{$trim['trim']}</option>";
                                                     }
                                                     ?>
                                                 </select><!-- /.select-->
+                                                <script type="text/javascript">
+                                                    document.getElementById('search_trim').value = "<?php echo isset($_POST['search_trim']) ? $_POST['search_trim'] : ''; ?>";
+                                                </script>
                                             </div><!-- /.model-select-icon -->
                                         </div>
                                     </div>
@@ -185,7 +217,7 @@
                                         <div class="single-model-search">
                                             <h2>година</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" name="search_year" id="search_year">
+                                                <select class="form-control" id="search_year" name="search_year" >
                                                     <option value="">избери</option><!-- /.option-->
                                                     <?php
                                                     foreach ($years as $year){
@@ -193,10 +225,13 @@
                                                     }
                                                     ?>
                                                 </select><!-- /.select-->
+                                                <script type="text/javascript">
+                                                    document.getElementById('search_year').value = "<?php echo isset($_POST['search_year']) ? $_POST['search_year'] : ''; ?>";
+                                                </script>
                                             </div><!-- /.model-select-icon -->
                                         </div>
                                         <div class="single-model-search">
-                                            <h2>цена до:</h2><span id="demo"></span>
+                                            <h2>цена до:</h2><span id="demo"></span> $
                                             <div class="slidecontainer">
                                                 <?php
                                                 foreach ($prices as $price) {
@@ -211,30 +246,14 @@
                                             <button type="submit" class="welcome-btn model-search-btn" onclick="showFeatured();" id="collectButton">Търси</button>
                                         </div>
                                     </div>
+                                    </form>
                                 </div>
                         </div>
                     </div>
                 </div>
             </div>
             <script>
-                const button = document.getElementById('collectButton');
-
-                button.addEventListener('click', async _ => {
-                    try {
-                        const response = await fetch('get_cars.php', {
-                            method: 'post',
-                            body: {
-                                // Your body
-                            }
-                        });
-                        console.log('Completed!', response);
-                    } catch(err) {
-                        console.error(`Error: ${err}`);
-                    }
-                });
-            </script>
-            <script>
-                document.getElementById('collectButton').addEventListener('click', function() {
+                /*document.getElementById('collectButton').addEventListener('click', async function() {
                     // Get the selected values from each select element
                     const search_brand = document.getElementById('search_brand').value;
                     const search_model = document.getElementById('search_model').value;
@@ -242,38 +261,37 @@
                     const search_trim = document.getElementById('search_trim').value;
                     const search_year = document.getElementById('search_year').value;
                     const search_price = document.getElementById('demo').innerHTML;
+
                     // Create an array with the selected values
                     const selectedValues = [search_brand, search_model, search_value, search_trim, search_year, search_price];
-                    // Log the array to the console (or use it as needed)
-                    console.log(selectedValues);
-                });
-                function showFeatured() {
 
+                    // Log the array to the console
+                    console.log(selectedValues);
+
+                    // Send the array to the PHP file using fetch
+                    try {
+                        const response = await fetch('get_cars.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(selectedValues)
+                        });
+                        const result = await response.json();
+                        console.log('Completed!', result);
+                    } catch(err) {
+                        console.error(`Error: ${err}`);
+                    }
+                });*/
+                /*function showFeatured() {
                     const featuredElement = document.getElementById("featured-cars");
+                    debugger;
                     if (featuredElement) {
                         featuredElement.scrollIntoView({ behavior: "smooth" });
                     }
-                }
+                }*/
             </script>
             <script>
-                $(document).ready(function() {
-                    $('#search_brand').change(function() {
-                        var brandId = $(this).val();
-                        if (brandId) {
-                            $.ajax({
-                                type: 'POST',
-                                url: 'get_car_models.php',
-                                data: { brand_id: brandId },
-                                success: function(response) {
-                                    $('#search_model').html(response);
-                                }
-                            });
-                        } else {
-                            $('#search_model').html('<option value="default">избери</option>');
-                        }
-                    });
-                });
-
                 var slider = document.getElementById("myRange");
                 var output = document.getElementById("demo");
                 output.innerHTML = slider.value; // Display the default slider value
@@ -285,6 +303,20 @@
             </script>
 		</section><!--/.welcome-hero-->
 		<!--welcome-hero end -->
+
+        <!--featured-cars start -->
+        <section id="featured-cars" class="featured-cars">
+            <div class="container">
+                <div class="section-header">
+                    <p>Разгледайте нашият шоуруум</p>
+                    <h2>featured cars</h2>
+                </div><!--/.section-header-->
+                <div class="featured-cars-content">
+                    <?php include "load_featured.php"?>
+                </div>
+            </div><!--/.container-->
+        </section><!--/.featured-cars-->
+        <!--featured-cars end -->
 
 		<!--service start -->
 		<section id="service" class="service">
@@ -399,216 +431,6 @@
 
 		</section><!--/.new-cars-->
 		<!--new-cars end -->
-
-		<!--featured-cars start -->
-		<section id="featured-cars" class="featured-cars">
-			<div class="container">
-				<div class="section-header">
-					<p>Разгледайте нашият шоуруум</p>
-					<h2>featured cars</h2>
-				</div><!--/.section-header-->
-				<div class="featured-cars-content">
-					<div class="row">
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/1.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2009
-											<span class="featured-mi-span"> 191,000 mi</span> 
-											<span class="featured-hp-span"> 240HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">BMW X1-series GT</a></h2>
-									<h3>$9,395</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/2.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2017
-											<span class="featured-mi-span"> 41100 mi</span> 
-											<span class="featured-hp-span"> 340HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">chevrolet camaro <span>zl1</span></a></h2>
-									<h3>$66,575</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/3.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2017
-											<span class="featured-mi-span"> 2100 mi</span> 
-											<span class="featured-hp-span"> 540HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">Lamborghini Huracan Performante <span>5.2 V10</span></a></h2>
-									<h3>$125,250</h3>
-									<p>
-
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/4.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2023
-											<span class="featured-mi-span"> 25100 mi</span> 
-											<span class="featured-hp-span"> 140HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">audi <span> a4</span> Combi</a></h2>
-									<h3>$35,500</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/5.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2017
-											<span class="featured-mi-span"> 56100 mi</span> 
-											<span class="featured-hp-span"> 240HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">infiniti <span>Q50</span></a></h2>
-									<h3>$36,850</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/6.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2020
-											<span class="featured-mi-span"> 3100 mi</span> 
-											<span class="featured-hp-span"> 300HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">porsche <span>718</span> cayman</a></h2>
-									<h3>$48,500</h3>
-									<p>
-										Porsche 718 Cayman е спортен автомобил с елегантен и агресивен дизайн. Оборудван с мощен 2.0-литров турбодвигател с 300 к.с., той ускорява от 0 до 100 км/ч за 4.9 секунди.
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/8.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2007
-											<span class="featured-mi-span"> 43232 mi</span> 
-											<span class="featured-hp-span"> 350HP</span>
-											stickshift
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#"><span>bmw M8-</span>gran coupe</a></h2>
-									<h3>$56,000</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-4 col-sm-6">
-							<div class="single-featured-cars">
-								<div class="featured-img-box">
-									<div class="featured-cars-img">
-										<img src="assets/images/featured-cars/7.png" alt="cars">
-									</div>
-									<div class="featured-model-info">
-										<p>
-											model: 2020
-											<span class="featured-mi-span"> 16300 mi</span> 
-											<span class="featured-hp-span"> 240HP</span>
-											 automatic
-										</p>
-									</div>
-								</div>
-								<div class="featured-cars-txt">
-									<h2><a href="#">BMW <span> x</span>series-6</a></h2>
-									<h3>$75,800</h3>
-									<p>
-										Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non. 
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div><!--/.container-->
-
-		</section><!--/.featured-cars-->
-		<!--featured-cars end -->
 
 		<!-- clients-say strat -->
 		<section id="clients-say"  class="clients-say">

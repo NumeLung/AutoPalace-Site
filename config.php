@@ -4,3 +4,4 @@ const DBUSER = "root";
 const DBPASS = "";
 const DBNAME = "torquegt";
 $CONN = new mysqli(HOST, DBUSER, DBPASS, DBNAME);
+?>

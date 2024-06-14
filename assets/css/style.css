@@ -374,7 +374,6 @@ nav.navbar.bootsnav .navbar-toggle i{color: #4e4ffa;}
         6. New-cars
 --------------------------------------*/
 .new-cars{
-    background: #f8f9fb;
     padding:112px 0 120px;
 }
 .new-cars-content{padding-top:96px;}
@@ -410,6 +409,7 @@ nav.navbar.bootsnav .navbar-toggle i{color: #4e4ffa;}
         7. Featured-cars
 --------------------------------------*/
 .featured-cars{
+    background: #f8f9fb;
     padding:112px 0 120px;
 }
 .featured-cars-content{padding-top:96px;}
