@@ -6,6 +6,13 @@ $db = new Database1();
 $aParams = [];
 $counter = 0;
 if ($_POST) {
+    ?>
+    <script>
+        document.getElementById("price").innerHTML = "<?php echo $_POST['price'];?>";
+    </script>
+    <?php
+
+
     $aParams = [
         'brand' => $_POST['search_brand'] ?? '',
         'model' => $_POST['search_model'] ?? '',
@@ -54,11 +61,6 @@ if ($_POST) {
         $sQuery .= ' AND ' . implode(' AND ', $conditions);
     }
 
-    try {
-        // Debugging: Log the query and parameters
-        error_log("Final Query: $sQuery");
-        error_log("Final Params: " . implode(", ", $params));
-
         $result = $db->select($sQuery, $params);
 
         foreach ($result as $res) {
@@ -93,9 +95,7 @@ if ($_POST) {
             ";
             $counter++;
         }
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
-    }
+
 } else {
     $featured = "
     SELECT c.id, b.`name` AS brand_name, m.`name` AS model_name, c.value, c.`trim`, c.`year`, c.price, c.mileage, c.hp, c.gears, c.`desc`, c.featured

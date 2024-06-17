@@ -62,7 +62,30 @@
     require_once "Database1.php";
     $db = new Database1();
 
+
+
+
+
     $brands = $db->select("SELECT id, name FROM brand");
+    $models = $db->select("SELECT id, name, id_brand FROM model");
+
+    $aBrandsForSearch = [];
+    foreach($brands as $k => $brand) {
+        $aBrandsForSearch[$brand['id']] = [
+            'brand_id'  => $brand['id'],
+            'brand_name' => $brand['name'],
+            'models' => []
+        ];
+        foreach ($models as $kk => $model) {
+            if ($model['id_brand'] == $brand['id']) {
+                $aBrandsForSearch[$brand['id']]['models'][$model['id']] = [
+                    'model_id' => $model['id'],
+                    'model_name' => $model['name']
+                ];
+            }
+        }
+    }
+
     $trims = $db->select("SELECT DISTINCT trim FROM cars");
     $values = $db->select("SELECT DISTINCT value FROM cars");
     $prices = $db->select("SELECT MAX(price) AS max, MIN(price) AS min FROM cars");
@@ -134,15 +157,16 @@
                                             <h2>марка</h2>
                                             <div class="model-select-icon">
                                                 <select class="form-control" id="search_brand" name="search_brand">
-                                                    <option value=''>Избери</option>"
+                                                    <option value="">Избери</option>
                                                 <?php
-                                                foreach ($brands as $brand) {
-                                                    $selected = isset($_POST['search_brand']) && $_POST['search_brand'] == $brand['id'] ? 'selected' : '';
-                                                    echo "<option $selected value='{$brand['id']}'>{$brand['name']}</option>";
+                                                foreach ($aBrandsForSearch as $k => $brand) {
+                                                    $selected = isset($_POST['search_brand']) && $_POST['search_brand'] == $brand['brand_id'] ? 'selected' : '';
+                                                    echo "<option $selected value='{$brand['brand_id']}'>{$brand['brand_name']}</option>\n";
                                                 }
                                                 ?>
                                                 </select>
                                                 <script type="text/javascript">
+                                                    // debugger;
                                                     document.getElementById('search_brand').value = "<?php echo isset($_POST['search_brand']) ? $_POST['search_brand'] : ''; ?>";
                                                 </script>
                                             </div>
@@ -150,32 +174,25 @@
                                         <div class="single-model-search">
                                             <h2>модел</h2>
                                             <div class="model-select-icon">
-                                                <select class="form-control" id="search_model">
-                                                    <option value="default">избери</option><!-- /.option-->
-                                                    <!-- Options will be populated dynamically -->
+                                                <select class="form-control" id="search_model" name="search_model">
+                                                    <option value="">избери</option><!-- /.option-->
+                                                    <?php
+                                                    foreach ($aBrandsForSearch as $k => $brand) {
+                                                        if ($k == $_POST['search_brand']) {
+                                                            foreach ($brand['models'] as $model) {
+                                                                $selected = isset($_POST['search_model']) && $_POST['search_model'] == $model['model_id'] ? 'selected' : '';
+                                                                echo "<option $selected value='{$model['model_id']}'>{$model['model_name']}</option>\n";
+                                                            }
+                                                        }
+                                                    }
+                                                    ?>
                                                 </select><!-- /.select-->
+                                                <script type="text/javascript">
+                                                    document.getElementById('search_model').value = "<?php echo isset($_POST['search_model']) ? $_POST['search_model'] : ''; ?>";
+                                                </script>
                                             </div><!-- /.model-select-icon -->
                                         </div>
-                                        <script>
-                                            //load car models via ajax
-                                            $(document).ready(function() {
-                                                $('#search_brand').change(function() {
-                                                    var brandId = $(this).val();
-                                                    if (brandId) {
-                                                        $.ajax({
-                                                            type: 'POST',
-                                                            url: 'get_car_models.php',
-                                                            data: { brand_id: brandId },
-                                                            success: function(response) {
-                                                                $('#search_model').html(response);
-                                                            }
-                                                        });
-                                                    } else {
-                                                        $('#search_model').html('<option value="">избери</option>');
-                                                    }
-                                                });
-                                            });
-                                        </script>
+
                                     </div>
                                     <div class="col-md-offset-1 col-md-2 col-sm-12">
                                         <div class="single-model-search">
@@ -186,7 +203,7 @@
                                                     <?php
                                                     foreach ($values as $value) {
                                                         $selected = isset($_POST['search_value']) && $_POST['search_value'] == $value['value'] ? 'selected' : '';
-                                                        echo "<option $selected value='{$value['value']}'>{$value['value']}</option>";
+                                                        echo "<option $selected value='{$value['value']}'>{$value['value']}</option>\n";
                                                     }
                                                     ?>
                                                 </select>
@@ -203,7 +220,7 @@
                                                     <?php
                                                     foreach ($trims as $trim) {
                                                         $selected = isset($_POST['search_trim']) && $_POST['search_trim'] == $trim['trim'] ? 'selected' : '';
-                                                        echo "<option $selected value='{$trim['trim']}'>{$trim['trim']}</option>";
+                                                        echo "<option $selected value='{$trim['trim']}'>{$trim['trim']}</option>\n";
                                                     }
                                                     ?>
                                                 </select><!-- /.select-->
@@ -221,7 +238,7 @@
                                                     <option value="">избери</option><!-- /.option-->
                                                     <?php
                                                     foreach ($years as $year){
-                                                        echo "<option value='{$year['year']}'>{$year['year']}</option>";
+                                                        echo "<option value='{$year['year']}'>{$year['year']}</option>\n";
                                                     }
                                                     ?>
                                                 </select><!-- /.select-->
@@ -231,14 +248,19 @@
                                             </div><!-- /.model-select-icon -->
                                         </div>
                                         <div class="single-model-search">
-                                            <h2>цена до:</h2><span id="demo"></span> $
+                                            <h2>цена до:</h2>$ <span id="price"></span>
                                             <div class="slidecontainer">
                                                 <?php
                                                 foreach ($prices as $price) {
-                                                    echo "<input type=\"range\" min='{$price['min']}' max='{$price['max']}' value=\"0\" class=\"slider\" id=\"myRange\" name=\"price\">";
+                                                    echo "<input type=\"range\" min='{$price['min']}' max='{$price['max']}' ";
                                                 }
-                                                ?>
+                                                $price = isset($prices['min']) ? $prices['min'] : 0;
+                                                if (isset($_POST['price'])) $price = $_POST['price'];
+                                                echo "value=\"{$price}\" class=\"slider\" id=\"myRange\" name=\"price\">"; ?>
                                             </div>
+                                            <script type="text/javascript">
+                                                document.getElementById('price').innerHTML = "<?php echo isset($_POST['price']) ? $_POST['price'] : ''; ?>";
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-sm-12">
@@ -247,6 +269,26 @@
                                         </div>
                                     </div>
                                     </form>
+                                    <!--<script>
+                                        //load car models via ajax
+                                        $(document).ready(function() {
+                                            $('#search_brand').click(function() {
+                                                var brandId = $(this).val();
+                                                if (brandId) {
+                                                    $.ajax({
+                                                        type: 'POST',
+                                                        url: 'get_car_models.php',
+                                                        data: { brand_id: brandId },
+                                                        success: function(response) {
+                                                            $('#search_model').html(response);
+                                                        }
+                                                    });
+                                                } else {
+                                                    $('#search_model').html('<option value="">избери</option>');
+                                                }
+                                            });
+                                        });
+                                    </script>-->
                                 </div>
                         </div>
                     </div>
@@ -293,7 +335,7 @@
             </script>
             <script>
                 var slider = document.getElementById("myRange");
-                var output = document.getElementById("demo");
+                var output = document.getElementById("price");
                 output.innerHTML = slider.value; // Display the default slider value
 
                 // Update the current slider value (each time you drag the slider handle)
