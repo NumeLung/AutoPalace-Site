@@ -63,9 +63,6 @@
     $db = new Database1();
 
 
-
-
-
     $brands = $db->select("SELECT id, name FROM brand");
     $models = $db->select("SELECT id, name, id_brand FROM model");
 
@@ -265,7 +262,7 @@
                                     </div>
                                     <div class="col-md-2 col-sm-12">
                                         <div class="single-model-search text-center">
-                                            <button type="submit" class="welcome-btn model-search-btn" onclick="showFeatured();" id="collectButton">Търси</button>
+                                            <button type="submit" class="welcome-btn model-search-btn" onclick="" id="collectButton">Търси</button>
                                         </div>
                                     </div>
                                     </form>
@@ -294,6 +291,60 @@
                     </div>
                 </div>
             </div>
+            <script>
+                var data = <?= json_encode($aBrandsForSearch) ?>
+                // Function to populate the model select element
+                function populateModelSelect(brandId) {
+                    const modelSelect = document.getElementById('search_model');
+                    modelSelect.innerHTML = '<option value="">избери</option>'; // Clear previous model options
+
+                    if (data[brandId]) {
+                        const models = data[brandId].models;
+                        for (const key in models) {
+                            if (models.hasOwnProperty(key)) {
+                                const model = models[key];
+                                const option = document.createElement('option');
+                                option.value = model.model_id;
+                                option.textContent = model.model_name;
+                                modelSelect.appendChild(option);
+                            }
+                        }
+                    }
+                }
+
+                // Event listener for brand select change
+                document.getElementById('search_brand').addEventListener('change', function() {
+                    const selectedBrandId = this.value;
+                    populateModelSelect(selectedBrandId);
+                });
+
+                // If a brand is already selected (e.g., due to form submission), populate models for it
+                document.addEventListener('DOMContentLoaded', function() {
+                    const brandSelect = document.getElementById('search_brand');
+                    if (brandSelect.value) {
+                        populateModelSelect(brandSelect.value);
+                    }
+                });
+            </script>
+            <!--<script>
+                var modelsByBrands = <?/*= json_encode($aBrandsForSearch) */?>
+                function displayModels(brandId) {
+                    const modelsContainer = document.getElementById('search_model');
+                    modelsContainer.innerHTML = ''; // Clear previous models
+                    debugger;
+                    if (brandId === data.brand_id) {
+                        const models = data.models;
+                        for (const key in models) {
+                            if (models.hasOwnProperty(key)) {
+                                const model = models[key];
+                                const modelDiv = document.createElement('div');
+                                modelDiv.textContent = `${model.model_name} (ID: ${model.model_id})`;
+                                modelsContainer.appendChild(modelDiv);
+                            }
+                        }
+                    }
+                }
+            </script>-->
             <script>
                 /*document.getElementById('collectButton').addEventListener('click', async function() {
                     // Get the selected values from each select element
@@ -351,7 +402,10 @@
             <div class="container">
                 <div class="section-header">
                     <p>Разгледайте нашият шоуруум</p>
-                    <h2>featured cars</h2>
+                    <?php if(empty($_POST)) {
+                        echo "<h2>featured cars</h2>";
+                    }
+                    ?>
                 </div><!--/.section-header-->
                 <div class="featured-cars-content">
                     <?php include "load_featured.php"?>
