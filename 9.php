@@ -57,68 +57,106 @@
     </head>
 	
 	<body>
-    <?php
-    require_once "config.php";
-    require_once "Database.php";
-    $db = new Database();
-    $brands = $db->select("SELECT id, name FROM brand");
-    $trims = $db->select("SELECT DISTINCT trim FROM cars");
-    $values = $db->select("SELECT DISTINCT value FROM cars");
-    $prices = $db->select("SELECT MAX(price) AS max, MIN(price) AS min FROM cars");
-    $years = $db->select("SELECT DISTINCT(year) FROM cars ORDER BY year ASC");
-    ?>
+
 		<!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
+	
+		<!--welcome-hero start -->
+		<section id="home" class="welcome-hero">
 
-        <div class="top-area">
-            <div class="header-area">
-                <!-- Start Navigation -->
-                <nav class="navbar navbar-default bootsnav  navbar-sticky navbar-scrollspy"  data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
+			<!-- top-area Start -->
+			<div class="top-area">
+				<div class="header-area">
+					<!-- Start Navigation -->
+				    <nav class="navbar navbar-default bootsnav  navbar-sticky navbar-scrollspy"  data-minus-value-desktop="70" data-minus-value-mobile="55" data-speed="1000">
 
-                    <div class="container">
+				        <div class="container">
 
-                        <!-- Start Header Navigation -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <a class="navbar-brand" href="index.php">TorqueGT<span></span></a>
+				            <!-- Start Header Navigation -->
+				            <div class="navbar-header">
+				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+				                    <i class="fa fa-bars"></i>
+				                </button>
+				                <a class="navbar-brand" href="index.php">TorqueGT<span></span></a>
 
-                        </div><!--/.navbar-header-->
-                        <!-- End Header Navigation -->
+				            </div><!--/.navbar-header-->
+				            <!-- End Header Navigation -->
 
-                        <!-- Collect the nav links, forms, and other content for toggling -->
-                        <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
-                            <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-                                <li class=" scroll active"><a href="\index.php">начало</a></li>
-                                <li class="scroll"><a href="#featured-cars">препоръчани коли</a></li>
-                                <li class="scroll"><a href="#contact">свържете се</a></li>
-                            </ul><!--/.nav -->
-                        </div><!-- /.navbar-collapse -->
-                    </div><!--/.container-->
-                </nav><!--/nav-->
-                <!-- End Navigation -->
-            </div><!--/.header-area-->
-            <div class="clearfix"></div>
+				            <!-- Collect the nav links, forms, and other content for toggling -->
+				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
+				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
+				                    <li class=" scroll active"><a href="index.php">начало</a></li>
+				                </ul><!--/.nav -->
+				            </div><!-- /.navbar-collapse -->
+				        </div><!--/.container-->
+				    </nav><!--/nav-->
+				    <!-- End Navigation -->
+				</div><!--/.header-area-->
+			    <div class="clearfix"></div>
 
-        </div><!-- /.top-area-->
-        <!-- top-area End -->
+			</div><!-- /.top-area-->
+			<!-- top-area End -->
 
-		<!--featured-cars start -->
-		<section id="featured-cars" class="featured-cars">
+			<div class="container">
+			</div>
+
+            <div class="container">
+            <div class="row">
+            </div>
+        </div>
+        </section><!--/.welcome-hero-->
+        <!--welcome-hero end -->
+
+		<!--new-cars start -->
+		<section id="new-cars" class="new-cars">
 			<div class="container">
 				<div class="section-header">
-					<p>Разгледайте нашият шоуруум</p>
-					<h2>featured cars</h2>
+					<p></p>
+					<h2></h2>
 				</div><!--/.section-header-->
-				<div class="featured-cars-content">
-					<?php require "load_featured.php" ?>
-				</div>
+                <div class="col-md-5 col-sm-12">
+                    <div class="new-cars-txt">
+                        <h2><a href="#">Porsche 911<span> GT3 RS</span></a></h2>
+                        <p>
+                            Веднага след като светлините дадат стартов сигнал, новият 911 GT3 RS осигурява невероятна производителност до 465 Nm на пистата. 386 kW (525 PS) ви катапултират от 0-100 км/ч за 3,2 секунди, без време за дишане до достигане на максимална скорост от 296 км/ч.
+                        </p>
+                        <p class="new-cars-para2">
+                            Леката спортна изпускателна система от неръждаема стомана осигурява нефилтрирано звуково изживяване до максимум 9000 об./мин.
+                        </p>
+                        <button class="welcome-btn new-cars-btn" onclick="window.location.href='#'">
+                            Направете запитване
+                        </button>
+                    </div><!--/.new-cars-txt-->
+                </div><!--/.col-->
+				<div class="new-cars-content">
+					<div class="owl-carousel owl-theme" id="new-cars-carousel">
+                    <?php
+                    $dir = "assets\images\9\*.webp";
+                    $images = glob( $dir );
+                    foreach($images as $image){
+                        echo "<div class=\"new-cars-item\">
+                            <div class=\"single-new-cars-item\">
+                                <div class=\"row\">
+                                    <div class=\"col-md-7 col-sm-12\">
+                                        <div class=\"new-cars-img\">
+                                            <img src='" . $image . "' />
+                                        </div><!--/.new-cars-img-->
+                                    </div>
+                                </div><!--/.row-->
+                            </div><!--/.single-new-cars-item-->
+                        </div><!--/.new-cars-item-->";
+                    }
+                    ?>
+					</div><!--/#new-cars-carousel-->
+				</div><!--/.new-cars-content-->
 			</div><!--/.container-->
+		</section><!--/.new-cars-->
+		<!--new-cars end -->
 
-		</section><!--/.featured-cars-->
-		<!--featured-cars end -->
+		<!--blog start -->
+		<section id="blog" class="blog"></section><!--/.blog-->
+		<!--blog end -->
 
 		<!--contact start-->
 		<footer id="contact"  class="contact">
@@ -141,7 +179,7 @@
 						</div>
 						<div class="col-md-2 col-sm-6">
 							<div class="single-footer-widget">
-								<h2>about devloon</h2>
+								<h2>about NumeLung</h2>
 								<ul>
 									<li><a href="#">За нас</a></li>
 									<li><a href="#">Работа при нас</a></li>
@@ -201,7 +239,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<p>
-								&copy; copyright.designed and developed by <a href="https://www.themesine.com/">NumeLung</a>.
+                                developed by <a href="">NumeLung</a>.
 							</p><!--/p-->
 						</div>
 						<div class="col-sm-6">

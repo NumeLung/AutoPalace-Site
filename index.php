@@ -117,10 +117,9 @@
 				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
 				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
 				                    <li class=" scroll active"><a href="#home">начало</a></li>
+                                    <li class="scroll"><a href="#featured-cars">препоръчани коли</a></li>
 				                    <li class="scroll"><a href="#service">сервиз</a></li>
 									<li class="scroll"><a href="#new-cars">нови коли</a></li>
-									<li class="scroll"><a href="#featured-cars">препоръчани коли</a></li>
-				                    <!--/<li class="scroll"><a href="#brand">брандове</a></li>-->
 				                    <li class="scroll"><a href="#contact">свържете се</a></li>
 				                </ul><!--/.nav -->
 				            </div><!-- /.navbar-collapse -->
@@ -185,7 +184,7 @@
                                                     ?>
                                                 </select><!-- /.select-->
                                                 <script type="text/javascript">
-                                                    document.getElementById('search_model').value = "<?php echo isset($_POST['search_model']) ? $_POST['search_model'] : ''; ?>";
+                                                    document.getElementById('search_model').value = "<?php echo isset($_POST['model_name']) ? $_POST['model_name'] : ''; ?>";
                                                 </script>
                                             </div><!-- /.model-select-icon -->
                                         </div>
@@ -266,26 +265,16 @@
                                         </div>
                                     </div>
                                     </form>
-                                    <!--<script>
-                                        //load car models via ajax
-                                        $(document).ready(function() {
-                                            $('#search_brand').click(function() {
-                                                var brandId = $(this).val();
-                                                if (brandId) {
-                                                    $.ajax({
-                                                        type: 'POST',
-                                                        url: 'get_car_models.php',
-                                                        data: { brand_id: brandId },
-                                                        success: function(response) {
-                                                            $('#search_model').html(response);
-                                                        }
-                                                    });
-                                                } else {
-                                                    $('#search_model').html('<option value="">избери</option>');
-                                                }
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="single-model-search text-center">
+                                            <button type="button" class="welcome-btn model-search-btn" id="reloadButton">изчисти</button>
+                                        </div>
+                                        <script>
+                                            document.getElementById('reloadButton').addEventListener('click', function() {
+                                                location.href = location.href;
                                             });
-                                        });
-                                    </script>-->
+                                        </script>
+                                    </div>
                                 </div>
                         </div>
                     </div>
@@ -326,64 +315,6 @@
                     }
                 });
             </script>
-            <!--<script>
-                var modelsByBrands = <?/*= json_encode($aBrandsForSearch) */?>
-                function displayModels(brandId) {
-                    const modelsContainer = document.getElementById('search_model');
-                    modelsContainer.innerHTML = ''; // Clear previous models
-                    debugger;
-                    if (brandId === data.brand_id) {
-                        const models = data.models;
-                        for (const key in models) {
-                            if (models.hasOwnProperty(key)) {
-                                const model = models[key];
-                                const modelDiv = document.createElement('div');
-                                modelDiv.textContent = `${model.model_name} (ID: ${model.model_id})`;
-                                modelsContainer.appendChild(modelDiv);
-                            }
-                        }
-                    }
-                }
-            </script>-->
-            <script>
-                /*document.getElementById('collectButton').addEventListener('click', async function() {
-                    // Get the selected values from each select element
-                    const search_brand = document.getElementById('search_brand').value;
-                    const search_model = document.getElementById('search_model').value;
-                    const search_value = document.getElementById('search_value').value;
-                    const search_trim = document.getElementById('search_trim').value;
-                    const search_year = document.getElementById('search_year').value;
-                    const search_price = document.getElementById('demo').innerHTML;
-
-                    // Create an array with the selected values
-                    const selectedValues = [search_brand, search_model, search_value, search_trim, search_year, search_price];
-
-                    // Log the array to the console
-                    console.log(selectedValues);
-
-                    // Send the array to the PHP file using fetch
-                    try {
-                        const response = await fetch('get_cars.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(selectedValues)
-                        });
-                        const result = await response.json();
-                        console.log('Completed!', result);
-                    } catch(err) {
-                        console.error(`Error: ${err}`);
-                    }
-                });*/
-                /*function showFeatured() {
-                    const featuredElement = document.getElementById("featured-cars");
-                    debugger;
-                    if (featuredElement) {
-                        featuredElement.scrollIntoView({ behavior: "smooth" });
-                    }
-                }*/
-            </script>
             <script>
                 var slider = document.getElementById("myRange");
                 var output = document.getElementById("price");
@@ -403,7 +334,7 @@
                 <div class="section-header">
                     <p>Разгледайте нашият шоуруум</p>
                     <?php if(empty($_POST)) {
-                        echo "<h2>featured cars</h2>";
+                        echo "<h2>Отличени автомобили</h2>";
                     }
                     ?>
                 </div><!--/.section-header-->
@@ -606,7 +537,7 @@
 		</section><!--/.clients-say-->	
 		<!-- clients-say end -->
 		
-		<!--brand strat
+		<!--brand strat -->
 		<section id="brand"  class="brand">
 			<div class="container">
 				<div class="brand-area">
@@ -648,7 +579,7 @@
 
 			</div>
 		</section>	
-		 -->
+
 		<!--blog start -->
 		<section id="blog" class="blog"></section><!--/.blog-->
 		<!--blog end -->
@@ -734,7 +665,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<p>
-								&copy; copyright.designed and developed by <a href="https://www.themesine.com/">NumeLung</a>.
+                                developed by <a href="">NumeLung</a>.
 							</p><!--/p-->
 						</div>
 						<div class="col-sm-6">

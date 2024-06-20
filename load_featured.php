@@ -12,14 +12,13 @@ if ($_POST) {
     </script>
     <?php
 
-
     $aParams = [
-        'brand' => $_POST['search_brand'] ?? '',
-        'model' => $_POST['search_model'] ?? '',
+        'brand' => intval($_POST['search_brand'] ?? ''),
+        'model' => intval($_POST['search_model'] ?? ''),
         'value' => $_POST['search_value'] ?? '',
         'trim' => $_POST['search_trim'] ?? '',
-        'year' => $_POST['search_year'] ?? '',
-        'price' => $_POST['price'] ?? ''
+        'year' => intval($_POST['search_year'] ?? ''),
+        'price' => intval($_POST['price'] ?? '')
     ];
 
     $sQuery = "
@@ -62,7 +61,7 @@ if ($_POST) {
     }
 
         $result = $db->select($sQuery, $params);
-
+        echo "<div class='row'>"; // Start the first row
         foreach ($result as $res) {
             if ($counter > 0 && $counter % 4 == 0) {
                 echo "</div><div class='row'>"; // Close the previous row and open a new row
@@ -84,7 +83,7 @@ if ($_POST) {
                         </div>
                     </div>
                     <div class=\"featured-cars-txt\">
-                        <h2><a href=\"#\"><span>{$res['brand_name']} </span>{$res['model_name']}</a></h2>
+                        <h2><a href=\"{$res['id']}.php\"><span>{$res['brand_name']} </span>{$res['model_name']}</a></h2>
                         <h3>{$res['price']} $</h3>
                         <p>
                             {$res['desc']}
@@ -127,7 +126,7 @@ if ($_POST) {
                     </div>
                 </div>
                 <div class=\"featured-cars-txt\">
-                    <h2><a href=\"#\"><span>{$feat['brand_name']} </span>{$feat['model_name']}</a></h2>
+                    <h2><a href=\"{$feat['id']}.php\"><span>{$feat['brand_name']} </span>{$feat['model_name']}</a></h2>
                     <h3>{$feat['price']} $</h3>
                     <p>
                         {$feat['desc']}
