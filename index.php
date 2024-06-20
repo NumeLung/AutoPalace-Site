@@ -13,7 +13,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
         
         <!-- title of site -->
-        <title>TorqueGT</title>
+        <title>AutoPalace</title>
 
         <!-- For favicon png -->
 		<link rel="shortcut icon" type="image/icon" href="assets/logo/favicon.png"/>
@@ -108,7 +108,7 @@
 				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
 				                    <i class="fa fa-bars"></i>
 				                </button>
-				                <a class="navbar-brand" href="index.php">TorqueGT<span></span></a>
+				                <a class="navbar-brand" href="index.php">AutoPalace<span></span></a>
 
 				            </div><!--/.navbar-header-->
 				            <!-- End Header Navigation -->
@@ -162,7 +162,6 @@
                                                 ?>
                                                 </select>
                                                 <script type="text/javascript">
-                                                    // debugger;
                                                     document.getElementById('search_brand').value = "<?php echo isset($_POST['search_brand']) ? $_POST['search_brand'] : ''; ?>";
                                                 </script>
                                             </div>
@@ -184,7 +183,8 @@
                                                     ?>
                                                 </select><!-- /.select-->
                                                 <script type="text/javascript">
-                                                    document.getElementById('search_model').value = "<?php echo isset($_POST['model_name']) ? $_POST['model_name'] : ''; ?>";
+                                                    debugger;
+                                                    document.getElementById('search_model').value = "<?php echo isset($_POST['search_model']) ? $_POST['search_model'] : ''; ?>";
                                                 </script>
                                             </div><!-- /.model-select-icon -->
                                         </div>
@@ -592,7 +592,7 @@
 						<div class="col-md-3 col-sm-6">
 							<div class="single-footer-widget">
 								<div class="footer-logo">
-									<a href="index.php">TorqueGT</a>
+									<a href="index.php">AutoPalace</a>
 								</div>
 								<p>
 									Авбомобилите са нашата страаст
@@ -605,7 +605,7 @@
 						</div>
 						<div class="col-md-2 col-sm-6">
 							<div class="single-footer-widget">
-								<h2>about devloon</h2>
+								<h2>about NumeLung</h2>
 								<ul>
 									<li><a href="#">За нас</a></li>
 									<li><a href="#">Работа при нас</a></li>
@@ -651,7 +651,7 @@
 								</div>
 								<div class="hm-foot-email">
 									<div class="foot-email-box">
-										<input type="text" class="form-control" placeholder="Add Email">
+										<input type="text" class="form-control" placeholder="Въведете имейл">
 									</div><!--/.foot-email-box-->
 									<div class="foot-email-subscribe">
 										<span><i class="fa fa-arrow-right"></i></span>

@@ -13,7 +13,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Rufina:400,700" rel="stylesheet">
         
         <!-- title of site -->
-        <title>TorqueGT</title>
+        <title>AutoPalace</title>
 
         <!-- For favicon png -->
 		<link rel="shortcut icon" type="image/icon" href="assets/logo/favicon.png"/>
@@ -78,7 +78,7 @@
 				                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
 				                    <i class="fa fa-bars"></i>
 				                </button>
-				                <a class="navbar-brand" href="index.php">TorqueGT<span></span></a>
+				                <a class="navbar-brand" href="index.php">AutoPalace<span></span></a>
 
 				            </div><!--/.navbar-header-->
 				            <!-- End Header Navigation -->
@@ -86,7 +86,7 @@
 				            <!-- Collect the nav links, forms, and other content for toggling -->
 				            <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
 				                <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-				                    <li class=" scroll active"><a href="index.php">начало</a></li>
+				                    <li class="active"><a href="index.php">начало</a></li>
 				                </ul><!--/.nav -->
 				            </div><!-- /.navbar-collapse -->
 				        </div><!--/.container-->
@@ -166,7 +166,7 @@
 						<div class="col-md-3 col-sm-6">
 							<div class="single-footer-widget">
 								<div class="footer-logo">
-									<a href="index.php">TorqueGT</a>
+									<a href="index.php">AutoPalace</a>
 								</div>
 								<p>
 									Авбомобилите са нашата страаст
@@ -225,7 +225,7 @@
 								</div>
 								<div class="hm-foot-email">
 									<div class="foot-email-box">
-										<input type="text" class="form-control" placeholder="Add Email">
+										<input type="text" class="form-control" placeholder="Въведете имейл">
 									</div><!--/.foot-email-box-->
 									<div class="foot-email-subscribe">
 										<span><i class="fa fa-arrow-right"></i></span>
